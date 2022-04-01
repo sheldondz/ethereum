@@ -13,7 +13,7 @@ module.exports = {
     hardhat: {
     },
     rinkeby: {
-      url:"https://rinkeby.infura.io/v3/b6a92872e9a34764855de1e6405adf3a",
+      url:"",
       accounts: [``]
     }
   }
