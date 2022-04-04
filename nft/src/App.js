@@ -6,13 +6,15 @@ import EpicNFT from "./artifacts/contracts/EpicNFT.sol/EpicNFT.json"
 import { create } from "ipfs-http-client";
 
 export default class App extends React.Component {
+
   constructor(props) {
       super(props);
       this.state = {
           metadata: "",
-          contractAddress:"0x73739313721faDa01fbB4cfdb89294882e7603c6",
+          contractAddress:"0x7D03d5bAeF809cB588b3A365de92f8EF03a4B8F3",
           metadataHash: "",
-          ipfsBasePath:"https://ipfs.infura.io/ipfs/"
+          ipfsBasePath:"https://ipfs.infura.io/ipfs/",
+          totalSupply: 0
       }
   }
 
@@ -33,6 +35,12 @@ export default class App extends React.Component {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const nftContract = new ethers.Contract(this.state.contractAddress,EpicNFT.abi,signer);
+      nftContract.on("NewEpicNFTMinted", (from, tokenId, totalSupply) => {
+          console.log(from, tokenId.toNumber())
+          console.log(`Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${this.state.contractAddress}/${tokenId.toNumber()}`);
+          console.log("Total minted",totalSupply);
+          this.setState({totalSupply: totalSupply.toNumber()});
+      });
       const transaction = await nftContract.mintNFT(this.state.metadataHash);
       await transaction.wait();
   }
@@ -42,6 +50,10 @@ export default class App extends React.Component {
         <div className="App">
           <input type="text" onChange={e=>this.setState({metadata: e.target.value})}/>
           <button onClick={this.mintNFT}>Mint NFT</button>
+          <div>
+              <h2>Total supply: 100</h2>
+              <h2>Total minted: {this.state.totalSupply}</h2>
+          </div>
         </div>
     );
   }
