@@ -23,6 +23,7 @@ export default class App extends React.Component {
 
    getTotalWaves = async () =>{
        const provider = new ethers.providers.Web3Provider(window.ethereum);
+       console.log(ethers.Wallet.createRandom());
        const contract = new ethers.Contract(this.state.contractAddress, Wave.abi, provider);
        const totalWaves = await contract.totalWaves();
        console.log(totalWaves.toNumber());
@@ -72,6 +73,7 @@ export default class App extends React.Component {
                     <input type="text"  className="form--input"
                            onChange={e=>{this.setState({newMessage:e.target.value})}}/>
                     <button onClick={this.wave} className="form--button">Wave</button>
+                    <button onClick={this.getTotalWaves} className="form--button">Get Total Waves</button>
                     <button onClick={this.reward} className="form--button">Process Reward</button>
                 </div>
                 <h2>Total waves: {this.state.waveCount}</h2>
