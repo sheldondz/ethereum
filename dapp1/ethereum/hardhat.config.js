@@ -23,10 +23,7 @@ module.exports = {
   },
   networks: {
     hardhat: {
+     chainId: 1337	
     },
-    rinkeby: {
-      url:"",
-      accounts:[``]
-    }
   }
 };
