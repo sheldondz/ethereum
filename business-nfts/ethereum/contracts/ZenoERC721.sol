@@ -20,7 +20,7 @@ contract ZenoERC721 is ERC721URIStorage, BaseRelayRecipient {
     Counters.Counter private _tokenIds;
     event BusinessNFTMinted(address previousHolder, address currentHolder, address client, uint itemId);
 
-    constructor(address trustedForwarder) ERC721("ZenoNFT", "ZENO") {
+    constructor(string memory name_, string memory symbol_, address trustedForwarder) ERC721(name_, symbol_) {
         _setTrustedForwarder(trustedForwarder);
     }
 

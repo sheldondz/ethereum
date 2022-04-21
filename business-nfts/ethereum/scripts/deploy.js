@@ -16,7 +16,7 @@ async function main() {
   // We get the contract to deploy
   const forwarder = "0x83A54884bE4657706785D7309cf46B58FE5f6e8a";
   const baseERC721Contract = await hre.ethers.getContractFactory("ZenoERC721");
-  const baseERC721 = await baseERC721Contract.deploy(hre.ethers.utils.getAddress(forwarder));
+  const baseERC721 = await baseERC721Contract.deploy("ZenoNFT", "ZENO", hre.ethers.utils.getAddress(forwarder));
   await baseERC721.deployed();
   console.log("ERC721 deployed to:", baseERC721.address);
 

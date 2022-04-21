@@ -10,7 +10,8 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      erc721Address:"0x6bEaaECA1619135c90AbB4D02Ba98033582bbcF0",
+      originalERC721: "0x8385431F79590AF5a6d89A832236cA925DE6df04",
+      erc721Address:"0xB62a211a0C83bbC85487d70C81e8c4bf55a0e4dd",
       paymaster: "0xA6e10aA9B038c9Cddea24D2ae77eC3cE38a0c016",
       forwarder: "0x83A54884bE4657706785D7309cf46B58FE5f6e8a",
     }
@@ -24,19 +25,18 @@ export default class App extends React.Component {
     await this.fetchAccounts();
     const paymaster = ethers.utils.getAddress(this.state.paymaster);
     const config = {
+      relayLookupWindowBlocks: 1e5,
+      relayRegistrationLookupBlocks: 1e5,
+      pastEventsQueryMaxPageSize: 2e4,
       paymasterAddress: paymaster,
       loggerConfiguration: {
         logLevel: 'debug',
         // loggerUrl: 'logger.opengsn.org',
       }
     }
-    const asyncApprovalData = async function (relayRequest: RelayRequest) {
-      relayRequest.relayData.forwarder = ethers.utils.getAddress(this.state.forwarder);
-      return Promise.resolve(relayRequest);
-    }
-    const provider = await RelayProvider.newProvider({ provider: window.ethereum, config, overrideDependencies:{ asyncApprovalData }}).init();
+    const provider = await RelayProvider.newProvider({ provider: window.ethereum,config}).init();
     const web3Provider = new ethers.providers.Web3Provider(provider);
-    const contract = new ethers.Contract(this.state.erc721Address,ERC721Contract.abi,web3Provider.getSigner());
+    const contract = new ethers.Contract(this.state.originalERC721,ERC721Contract.abi,web3Provider.getSigner());
     const mintTx = await contract.mintBusinessNFT(web3Provider.getSigner().getAddress(),"https://ipfs.io/ipfs/QmTpRhDrzQJ5X2yRSo3NfqsabaRV16DHanwYXd2HTjdfQR?filename=Frame%201%20(8).png",{gasLimit:600000});
     await mintTx.wait();
   }
